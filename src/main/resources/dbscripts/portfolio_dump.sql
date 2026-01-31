@@ -26,6 +26,7 @@ CREATE TABLE `assets` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `symbol` varchar(10) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `type` varchar(50) NOT NULL,
   `sector` varchar(50) NOT NULL,
   `current_price` decimal(18,4) NOT NULL,
   `last_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -33,7 +34,7 @@ CREATE TABLE `assets` (
   UNIQUE KEY `symbol` (`symbol`),
   KEY `idx_assets_symbol` (`symbol`),
   KEY `idx_assets_sector` (`sector`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +43,7 @@ CREATE TABLE `assets` (
 
 LOCK TABLES `assets` WRITE;
 /*!40000 ALTER TABLE `assets` DISABLE KEYS */;
-INSERT INTO `assets` VALUES (1,'AAPL','Apple Inc.','Technology',195.5000,'2026-01-31 08:04:46'),(2,'MSFT','Microsoft Corporation','Technology',380.2500,'2026-01-31 08:04:46'),(3,'GOOGL','Alphabet Inc.','Technology',155.8000,'2026-01-31 08:04:46'),(4,'AMZN','Amazon.com Inc.','Consumer',180.7500,'2026-01-31 08:04:46'),(5,'TSLA','Tesla Inc.','Automotive',245.3000,'2026-01-31 08:04:46'),(6,'META','Meta Platforms Inc.','Technology',520.4500,'2026-01-31 08:04:46'),(7,'NVDA','NVIDIA Corporation','Technology',875.2000,'2026-01-31 08:04:46'),(8,'JPM','JPMorgan Chase & Co.','Finance',195.1000,'2026-01-31 08:04:46'),(9,'V','Visa Inc.','Finance',280.6000,'2026-01-31 08:04:46'),(10,'JNJ','Johnson & Johnson','Healthcare',155.4500,'2026-01-31 08:04:46');
+INSERT INTO `assets` VALUES (1,'AAPL','Apple Inc.','STOCK','Technology',195.5000,'2026-01-31 09:45:33'),(2,'MSFT','Microsoft Corporation','STOCK','Technology',380.2500,'2026-01-31 09:45:33'),(3,'GOOGL','Alphabet Inc.','STOCK','Technology',155.8000,'2026-01-31 09:45:33'),(4,'AMZN','Amazon.com Inc.','STOCK','Consumer',180.7500,'2026-01-31 09:45:33'),(5,'TSLA','Tesla Inc.','STOCK','Automotive',245.3000,'2026-01-31 09:45:33'),(6,'META','Meta Platforms Inc.','STOCK','Technology',520.4500,'2026-01-31 09:45:33'),(7,'NVDA','NVIDIA Corporation','STOCK','Technology',875.2000,'2026-01-31 09:45:33'),(8,'JPM','JPMorgan Chase & Co.','STOCK','Finance',195.1000,'2026-01-31 09:45:33'),(9,'V','Visa Inc.','STOCK','Finance',280.6000,'2026-01-31 09:45:33'),(10,'JNJ','Johnson & Johnson','STOCK','Healthcare',155.4500,'2026-01-31 09:45:33'),(11,'UST','US Treasury Bond 10Y','BOND','Fixed Income',98.5000,'2026-01-31 09:45:33'),(12,'VTSAX','Vanguard Total Stock Market Index','ETF','Mixed',245.7500,'2026-01-31 09:45:33');
 /*!40000 ALTER TABLE `assets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +103,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES (1,1,'BUY',100.0000,150.0000,'2025-07-31 08:04:46'),(2,1,'BUY',50.0000,165.0000,'2025-10-31 08:04:46'),(3,2,'BUY',75.0000,320.0000,'2025-08-31 08:04:46'),(4,3,'BUY',30.0000,120.0000,'2025-09-30 08:04:46'),(5,3,'SELL',10.0000,155.0000,'2025-12-31 08:04:46'),(6,4,'BUY',40.0000,150.0000,'2025-11-30 08:04:46'),(7,5,'BUY',20.0000,200.0000,'2025-10-31 08:04:46'),(8,5,'BUY',15.0000,230.0000,'2025-12-31 08:04:46'),(9,6,'BUY',10.0000,450.0000,'2025-11-30 08:04:46'),(10,7,'BUY',5.0000,750.0000,'2025-12-31 08:04:46');
+INSERT INTO `transactions` VALUES (1,1,'BUY',100.0000,150.0000,'2025-07-31 09:45:33'),(2,1,'BUY',50.0000,165.0000,'2025-10-31 09:45:33'),(3,2,'BUY',75.0000,320.0000,'2025-08-31 09:45:33'),(4,3,'BUY',30.0000,120.0000,'2025-09-30 09:45:33'),(5,3,'SELL',10.0000,155.0000,'2025-12-31 09:45:33'),(6,4,'BUY',40.0000,150.0000,'2025-11-30 09:45:33'),(7,5,'BUY',20.0000,200.0000,'2025-10-31 09:45:33'),(8,5,'BUY',15.0000,230.0000,'2025-12-31 09:45:33'),(9,6,'BUY',10.0000,450.0000,'2025-11-30 09:45:33'),(10,7,'BUY',5.0000,750.0000,'2025-12-31 09:45:33');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-31 13:36:18
+-- Dump completed on 2026-01-31 15:15:53

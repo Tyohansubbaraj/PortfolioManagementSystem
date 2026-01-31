@@ -18,6 +18,7 @@ CREATE TABLE assets (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     symbol VARCHAR(10) UNIQUE NOT NULL,
     name VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NOT NULL,
     sector VARCHAR(50) NOT NULL,
     current_price DECIMAL(18,4) NOT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -63,17 +64,19 @@ CREATE INDEX idx_assets_sector ON assets(sector);
 -- =====================================================
 
 -- Insert sample assets (The Catalog)
-INSERT INTO assets (symbol, name, sector, current_price, last_updated) VALUES
-('AAPL', 'Apple Inc.', 'Technology', 195.50, NOW()),
-('MSFT', 'Microsoft Corporation', 'Technology', 380.25, NOW()),
-('GOOGL', 'Alphabet Inc.', 'Technology', 155.80, NOW()),
-('AMZN', 'Amazon.com Inc.', 'Consumer', 180.75, NOW()),
-('TSLA', 'Tesla Inc.', 'Automotive', 245.30, NOW()),
-('META', 'Meta Platforms Inc.', 'Technology', 520.45, NOW()),
-('NVDA', 'NVIDIA Corporation', 'Technology', 875.20, NOW()),
-('JPM', 'JPMorgan Chase & Co.', 'Finance', 195.10, NOW()),
-('V', 'Visa Inc.', 'Finance', 280.60, NOW()),
-('JNJ', 'Johnson & Johnson', 'Healthcare', 155.45, NOW());
+INSERT INTO assets (symbol, name, type, sector, current_price, last_updated) VALUES
+('AAPL', 'Apple Inc.', 'STOCK', 'Technology', 195.50, NOW()),
+('MSFT', 'Microsoft Corporation', 'STOCK', 'Technology', 380.25, NOW()),
+('GOOGL', 'Alphabet Inc.', 'STOCK', 'Technology', 155.80, NOW()),
+('AMZN', 'Amazon.com Inc.', 'STOCK', 'Consumer', 180.75, NOW()),
+('TSLA', 'Tesla Inc.', 'STOCK', 'Automotive', 245.30, NOW()),
+('META', 'Meta Platforms Inc.', 'STOCK', 'Technology', 520.45, NOW()),
+('NVDA', 'NVIDIA Corporation', 'STOCK', 'Technology', 875.20, NOW()),
+('JPM', 'JPMorgan Chase & Co.', 'STOCK', 'Finance', 195.10, NOW()),
+('V', 'Visa Inc.', 'STOCK', 'Finance', 280.60, NOW()),
+('JNJ', 'Johnson & Johnson', 'STOCK', 'Healthcare', 155.45, NOW()),
+('UST', 'US Treasury Bond 10Y', 'BOND', 'Fixed Income', 98.50, NOW()),
+('VTSAX', 'Vanguard Total Stock Market Index', 'ETF', 'Mixed', 245.75, NOW());
 
 -- Insert sample transactions (The Action Log)
 -- Transactions for AAPL (asset_id = 1)
