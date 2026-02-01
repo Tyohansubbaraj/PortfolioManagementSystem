@@ -51,4 +51,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
      */
     @Query("SELECT t FROM Transaction t WHERE t.asset.id = :assetId AND t.tradeDate BETWEEN :startDate AND :endDate ORDER BY t.tradeDate DESC")
     List<Transaction> findTransactionsByAssetAndDateRange(@Param("assetId") Long assetId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Find all transactions for a specific asset within a date range (using method name convention)
+     * @param assetId the asset ID
+     * @param startDate the start date
+     * @param endDate the end date
+     * @return List of transactions for the asset within the date range
+     */
+    List<Transaction> findByAssetIdAndTradeDateBetween(Long assetId, LocalDateTime startDate, LocalDateTime endDate);
 }
