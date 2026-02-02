@@ -1,6 +1,8 @@
 package com.marketminds.portfoliomanagementsystem.repository;
 
 import com.marketminds.portfoliomanagementsystem.model.Transaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,4 +53,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
      */
     @Query("SELECT t FROM Transaction t WHERE t.asset.id = :assetId AND t.tradeDate BETWEEN :startDate AND :endDate ORDER BY t.tradeDate DESC")
     List<Transaction> findTransactionsByAssetAndDateRange(@Param("assetId") Long assetId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    // --- Pageable / Page variants ---
+    Page<Transaction> findByAssetId(Long assetId, Pageable pageable);
+
+    @Query("SELECT t FROM Transaction t WHERE t.tradeDate BETWEEN :startDate AND :endDate ORDER BY t.tradeDate DESC")
+    Page<Transaction> findTransactionsByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+    @Query("SELECT t FROM Transaction t WHERE t.asset.id = :assetId AND t.tradeDate BETWEEN :startDate AND :endDate ORDER BY t.tradeDate DESC")
+    Page<Transaction> findTransactionsByAssetAndDateRange(@Param("assetId") Long assetId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
 }

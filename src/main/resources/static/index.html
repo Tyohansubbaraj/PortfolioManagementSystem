@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Portfolio Management</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+<header>
+    <h1>Portfolio Management System</h1>
+    <nav>
+        <button id="tab-portfolio" class="tab active">Portfolio</button>
+        <button id="tab-transactions" class="tab">Transactions</button>
+        <button id="tab-analytics" class="tab">Analytics</button>
+    </nav>
+</header>
+
+<main>
+    <section id="view-portfolio" class="view">
+        <h2>Your Portfolio</h2>
+        <div id="portfolio-summary" class="card">Loading...</div>
+        <table id="assets-table" class="table">
+            <thead><tr><th>Asset</th><th>Qty</th><th>Price</th><th>Value</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </section>
+
+    <section id="view-transactions" class="view hidden">
+        <h2>Transactions</h2>
+        <div id="transactions-list" class="card">Loading...</div>
+    </section>
+
+    <section id="view-analytics" class="view hidden">
+        <h2>Advanced Analytics</h2>
+        <div class="card analytics-summary">
+            <div><strong>Portfolio Value:</strong> <span id="analytics-value">-</span></div>
+            <div><strong>Daily Volatility:</strong> <span id="analytics-vol">-</span></div>
+            <div><strong>Recent Return (7d):</strong> <span id="analytics-return">-</span></div>
+        </div>
+
+        <div class="analytics-widgets">
+            <div class="card widget">
+                <h3>Portfolio Trend</h3>
+                <canvas id="chart" width="800" height="300"></canvas>
+            </div>
+
+            <div class="card widget">
+                <h3>Asset Allocation</h3>
+                <canvas id="allocation-chart" width="300" height="300"></canvas>
+                <div id="allocation-legend" class="legend"></div>
+            </div>
+
+            <div class="card widget full-width">
+                <h3>P/L Heatmap</h3>
+                <div id="pl-heatmap" class="heatmap">Loading...</div>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<footer>
+    <small>Static frontend: HTML / CSS / JS — connect to Spring Boot backend APIs under /api/</small>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
