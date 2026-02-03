@@ -1,5 +1,6 @@
 package com.marketminds.portfoliomanagementsystem.controller;
 
+import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
 import com.marketminds.portfoliomanagementsystem.dto.HoldingsSummaryDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 import com.marketminds.portfoliomanagementsystem.service.HoldingService;
@@ -72,15 +73,16 @@ public class HoldingController {
      * @return ResponseEntity with holding if found, otherwise 404
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Holding> getHoldingById(@PathVariable Long id) {
+    public ResponseEntity<HoldingDetailsDTO> getHoldingById(@PathVariable Long id) {
         try {
-            Optional<Holding> holding = holdingService.getHoldingById(id);
-            return holding.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            HoldingDetailsDTO holding = holdingService.getHoldingById(id);
+            return ResponseEntity.ok(holding);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.notFound().build();
         }
     }
+
+
 
     /**
      * Get holding by asset ID

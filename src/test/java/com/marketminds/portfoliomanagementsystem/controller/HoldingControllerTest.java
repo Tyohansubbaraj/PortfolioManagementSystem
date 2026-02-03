@@ -1,5 +1,6 @@
 package com.marketminds.portfoliomanagementsystem.controller;
 
+import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
 import com.marketminds.portfoliomanagementsystem.model.Asset;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 import com.marketminds.portfoliomanagementsystem.service.HoldingService;
@@ -29,6 +30,7 @@ class HoldingControllerTest {
     private HoldingService holdingService;
 
     private Holding testHolding;
+    private HoldingDetailsDTO testHoldingDto;
     private Asset testAsset;
 
     @BeforeEach
@@ -50,6 +52,12 @@ class HoldingControllerTest {
         testHolding.setAsset(testAsset);
         testHolding.setTotalQuantity(new BigDecimal("100.00"));
         testHolding.setAvgBuyPrice(new BigDecimal("120.00"));
+
+        testHoldingDto = new HoldingDetailsDTO();
+        testHoldingDto.setHoldingId(1L);
+        testHoldingDto.setAssetSymbol("AAPL");
+        testHoldingDto.setQuantity(BigDecimal.valueOf(10));
+        testHoldingDto.setAvgBuyPrice(new BigDecimal("150.00"));
     }
 
     @Test
@@ -100,23 +108,32 @@ class HoldingControllerTest {
     @Test
     @DisplayName("Should get holding by ID and return 200 OK")
     void testGetHoldingById_Success() {
-        when(holdingService.getHoldingById(1L)).thenReturn(Optional.of(testHolding));
 
-        ResponseEntity<Holding> response = holdingController.getHoldingById(1L);
+        when(holdingService.getHoldingById(1L))
+                .thenReturn(testHoldingDto);
+
+        ResponseEntity<HoldingDetailsDTO> response =
+                holdingController.getHoldingById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(testHolding, response.getBody());
     }
 
+
     @Test
     @DisplayName("Should return 404 Not Found when holding doesn't exist")
     void testGetHoldingById_NotFound() {
-        when(holdingService.getHoldingById(999L)).thenReturn(Optional.empty());
 
-        ResponseEntity<Holding> response = holdingController.getHoldingById(999L);
+        when(holdingService.getHoldingById(999L))
+                .thenThrow(new IllegalArgumentException(
+                        "Holding not found with id: 999"));
+
+        ResponseEntity<HoldingDetailsDTO> response =
+                holdingController.getHoldingById(999L);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+
 
     @Test
     @DisplayName("Should get holding by asset ID and return 200 OK")
