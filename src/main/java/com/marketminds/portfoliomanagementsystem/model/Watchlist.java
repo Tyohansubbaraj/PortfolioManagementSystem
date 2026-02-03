@@ -1,6 +1,7 @@
 package com.marketminds.portfoliomanagementsystem.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "watchlist")
@@ -12,6 +13,7 @@ public class Watchlist {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Asset asset;
 
     @Column(name = "notes", columnDefinition = "TEXT")
