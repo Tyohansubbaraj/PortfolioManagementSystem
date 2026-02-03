@@ -1,5 +1,7 @@
 package com.marketminds.portfoliomanagementsystem.service;
 
+import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
+import com.marketminds.portfoliomanagementsystem.dto.HoldingsSummaryDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 
 import java.math.BigDecimal;
@@ -36,7 +38,7 @@ public interface HoldingService {
      * @param id the holding ID
      * @return Optional containing the holding if found
      */
-    Optional<Holding> getHoldingById(Long id);
+    HoldingDetailsDTO getHoldingById(Long id);
 
     /**
      * Get all holdings
@@ -74,4 +76,11 @@ public interface HoldingService {
      * @return the updated holding
      */
     Holding updateHoldingOnSell(Long holdingId, BigDecimal quantityToSell);
+
+
+    /**
+     * Get a summary of all holdings
+     * @return HoldingsSummaryDTO containing the summary
+     */
+    HoldingsSummaryDTO getHoldingsSummary();
 }

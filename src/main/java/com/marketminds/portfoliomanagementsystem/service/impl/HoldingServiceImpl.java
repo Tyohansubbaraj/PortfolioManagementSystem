@@ -1,5 +1,7 @@
 package com.marketminds.portfoliomanagementsystem.service.impl;
 
+import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
+import com.marketminds.portfoliomanagementsystem.dto.HoldingsSummaryDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 import com.marketminds.portfoliomanagementsystem.repository.HoldingRepository;
 import com.marketminds.portfoliomanagementsystem.service.HoldingService;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,11 +67,47 @@ public class HoldingServiceImpl implements HoldingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Holding> getHoldingById(Long id) {
+    public HoldingDetailsDTO getHoldingById(Long id) {
+
         if (id == null) {
             throw new IllegalArgumentException("Holding ID cannot be null");
         }
-        return holdingRepository.findById(id);
+
+        Holding holding = holdingRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Holding with ID " + id + " not found")
+                );
+
+        BigDecimal quantity = holding.getTotalQuantity();
+        BigDecimal avgBuyPrice = holding.getAvgBuyPrice();
+        BigDecimal currentPrice = holding.getAsset().getCurrentPrice();
+
+        BigDecimal totalInvested = quantity.multiply(avgBuyPrice);
+        BigDecimal currentValue = quantity.multiply(currentPrice);
+        BigDecimal profitLoss = currentValue.subtract(totalInvested);
+
+        BigDecimal profitLossPercent = BigDecimal.ZERO;
+        if (totalInvested.compareTo(BigDecimal.ZERO) > 0) {
+            profitLossPercent = profitLoss
+                    .divide(totalInvested, 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100));
+        }
+
+        HoldingDetailsDTO dto = new HoldingDetailsDTO();
+        dto.setHoldingId(holding.getId());
+        dto.setAssetName(holding.getAsset().getName());
+        dto.setAssetSymbol(holding.getAsset().getSymbol());
+
+        dto.setQuantity(quantity);
+        dto.setAvgBuyPrice(avgBuyPrice);
+        dto.setCurrentPrice(currentPrice);
+
+        dto.setTotalInvested(totalInvested);
+        dto.setCurrentValue(currentValue);
+        dto.setProfitLoss(profitLoss);
+        dto.setProfitLossPercent(profitLossPercent);
+
+        return dto;
     }
 
     @Override
@@ -152,5 +191,42 @@ public class HoldingServiceImpl implements HoldingService {
         holding.setTotalQuantity(newQuantity);
 
         return holdingRepository.save(holding);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public HoldingsSummaryDTO getHoldingsSummary() {
+        List<Holding> holdings = holdingRepository.findAll();
+
+        BigDecimal totalInvested = BigDecimal.ZERO;
+        BigDecimal currentValue = BigDecimal.ZERO;
+
+        for (Holding holding : holdings) {
+
+            BigDecimal quantity = holding.getTotalQuantity();
+            BigDecimal avgBuyPrice = holding.getAvgBuyPrice();
+            BigDecimal currentPrice = holding.getAsset().getCurrentPrice();
+
+            totalInvested = totalInvested.add(quantity.multiply(avgBuyPrice));
+            currentValue = currentValue.add(quantity.multiply(currentPrice));
+
+        }
+
+        BigDecimal totalProfitLoss = currentValue.subtract(totalInvested);
+        BigDecimal totalProfitLossPercentage = BigDecimal.ZERO;;
+        BigDecimal totalProfitLossPercent = BigDecimal.ZERO;
+        if (totalInvested.compareTo(BigDecimal.ZERO) > 0) {
+            totalProfitLossPercent = totalProfitLoss
+                    .divide(totalInvested, 4, RoundingMode.HALF_UP)
+                    .multiply(BigDecimal.valueOf(100));
+        }
+
+        HoldingsSummaryDTO summary = new HoldingsSummaryDTO();
+        summary.setTotalInvested(totalInvested);
+        summary.setCurrentValue(currentValue);
+        summary.setTotalProfitLoss(totalProfitLoss);
+        summary.setTotalProfitLossPercent(totalProfitLossPercent);
+
+        return summary;
     }
 }
