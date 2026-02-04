@@ -34,8 +34,8 @@ class HoldingRepositoryTest {
     @BeforeEach
     void setUp() {
         // Create and persist assets
-        asset1 = new Asset("AAPL", "Apple Inc.", "Stock", "Technology", new BigDecimal("150.25"), LocalDateTime.now());
-        asset2 = new Asset("MSFT", "Microsoft Corporation", "Stock", "Technology", new BigDecimal("320.50"), LocalDateTime.now());
+        asset1 = new Asset("PLTR", "Palantir Technologies Inc.", "Stock", "Technology", new BigDecimal("150.25"), LocalDateTime.now());
+        asset2 = new Asset("MINING", "The Mining Company", "Stock", "Materials", new BigDecimal("320.50"), LocalDateTime.now());
 
         entityManager.persist(asset1);
         entityManager.persist(asset2);
