@@ -223,7 +223,7 @@ const Holdings = () => {
                           className="btn btn-danger"
                           onClick={() => handleSellAsset(holding)}
                         >
-                          Sell
+                            Remove
                         </button>
                       </div>
                     </td>
@@ -285,5 +285,8 @@ const Holdings = () => {
     </div>
   );
 };
+
+// add charts to each individual holding showing historical performance. should be showed when the asset is clicked in a small popup with AI recommendation for BUY HOLD OR SELL.
+// add showChart
 
 export default Holdings;

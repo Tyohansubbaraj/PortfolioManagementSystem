@@ -76,9 +76,9 @@ public class HoldingController {
     public ResponseEntity<HoldingDetailsDTO> getHoldingById(@PathVariable Long id) {
         try {
             HoldingDetailsDTO holding = holdingService.getHoldingById(id);
-            return ResponseEntity.ok(holding);
+            return new ResponseEntity<>(holding,HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -207,8 +207,8 @@ public class HoldingController {
         }
     }
 
-    @GetMapping("/summary")
-    public ResponseEntity<HoldingsSummaryDTO> getHoldingsSummary() {
-        return ResponseEntity.ok(holdingService.getHoldingsSummary());
-    }
+//    @GetMapping("/summary")
+//    public ResponseEntity<HoldingsSummaryDTO> getHoldingsSummary() {
+//        return ResponseEntity.ok(holdingService.getHoldingsSummary());
+//    }
 }

@@ -193,40 +193,40 @@ public class HoldingServiceImpl implements HoldingService {
         return holdingRepository.save(holding);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public HoldingsSummaryDTO getHoldingsSummary() {
-        List<Holding> holdings = holdingRepository.findAll();
-
-        BigDecimal totalInvested = BigDecimal.ZERO;
-        BigDecimal currentValue = BigDecimal.ZERO;
-
-        for (Holding holding : holdings) {
-
-            BigDecimal quantity = holding.getTotalQuantity();
-            BigDecimal avgBuyPrice = holding.getAvgBuyPrice();
-            BigDecimal currentPrice = holding.getAsset().getCurrentPrice();
-
-            totalInvested = totalInvested.add(quantity.multiply(avgBuyPrice));
-            currentValue = currentValue.add(quantity.multiply(currentPrice));
-
-        }
-
-        BigDecimal totalProfitLoss = currentValue.subtract(totalInvested);
-        BigDecimal totalProfitLossPercentage = BigDecimal.ZERO;;
-        BigDecimal totalProfitLossPercent = BigDecimal.ZERO;
-        if (totalInvested.compareTo(BigDecimal.ZERO) > 0) {
-            totalProfitLossPercent = totalProfitLoss
-                    .divide(totalInvested, 4, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100));
-        }
-
-        HoldingsSummaryDTO summary = new HoldingsSummaryDTO();
-        summary.setTotalInvested(totalInvested);
-        summary.setCurrentValue(currentValue);
-        summary.setTotalProfitLoss(totalProfitLoss);
-        summary.setTotalProfitLossPercent(totalProfitLossPercent);
-
-        return summary;
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public HoldingsSummaryDTO getHoldingsSummary() {
+//        List<Holding> holdings = holdingRepository.findAll();
+//
+//        BigDecimal totalInvested = BigDecimal.ZERO;
+//        BigDecimal currentValue = BigDecimal.ZERO;
+//
+//        for (Holding holding : holdings) {
+//
+//            BigDecimal quantity = holding.getTotalQuantity();
+//            BigDecimal avgBuyPrice = holding.getAvgBuyPrice();
+//            BigDecimal currentPrice = holding.getAsset().getCurrentPrice();
+//
+//            totalInvested = totalInvested.add(quantity.multiply(avgBuyPrice));
+//            currentValue = currentValue.add(quantity.multiply(currentPrice));
+//
+//        }
+//
+//        BigDecimal totalProfitLoss = currentValue.subtract(totalInvested);
+//        BigDecimal totalProfitLossPercentage = BigDecimal.ZERO;;
+//        BigDecimal totalProfitLossPercent = BigDecimal.ZERO;
+//        if (totalInvested.compareTo(BigDecimal.ZERO) > 0) {
+//            totalProfitLossPercent = totalProfitLoss
+//                    .divide(totalInvested, 4, RoundingMode.HALF_UP)
+//                    .multiply(BigDecimal.valueOf(100));
+//        }
+//
+//        HoldingsSummaryDTO summary = new HoldingsSummaryDTO();
+//        summary.setTotalInvested(totalInvested);
+//        summary.setCurrentValue(currentValue);
+//        summary.setTotalProfitLoss(totalProfitLoss);
+//        summary.setTotalProfitLossPercent(totalProfitLossPercent);
+//
+//        return summary;
+//    }
 }

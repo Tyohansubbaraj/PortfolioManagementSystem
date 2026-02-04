@@ -40,31 +40,31 @@ function App() {
             className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            📈 Dashboard
+            Dashboard
           </button>
           <button
             className={`tab-button ${activeTab === 'assets' ? 'active' : ''}`}
             onClick={() => setActiveTab('assets')}
           >
-            💼 Assets
+            Assets
           </button>
           <button
             className={`tab-button ${activeTab === 'holdings' ? 'active' : ''}`}
             onClick={() => setActiveTab('holdings')}
           >
-            🏆 Holdings
+            Holdings
           </button>
           <button
             className={`tab-button ${activeTab === 'transactions' ? 'active' : ''}`}
             onClick={() => setActiveTab('transactions')}
           >
-            📝 Transactions
+            Transactions
           </button>
           <button
             className={`tab-button ${activeTab === 'watchlist' ? 'active' : ''}`}
             onClick={() => setActiveTab('watchlist')}
           >
-            ⭐ Watchlist
+            Watchlist
           </button>
         </div>
 

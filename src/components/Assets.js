@@ -281,7 +281,7 @@ const Assets = () => {
                         className="btn btn-primary"
                         onClick={() => handleBuyAsset(asset)}
                       >
-                        Buy
+                        Add
                       </button>
                       <button
                         className={`btn ${watchlist.has(asset.id) ? 'btn-success' : 'btn-secondary'}`}
@@ -376,6 +376,7 @@ const Assets = () => {
       )}
 
       {showBuyModal && buyingAsset && (
+      // add purchase date so that we can fetch price on that day
         <div className="modal active">
           <div className="modal-content">
             <div className="modal-header">
@@ -424,5 +425,7 @@ const Assets = () => {
     </div>
   );
 };
+
+
 
 export default Assets;

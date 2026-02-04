@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: localhost    Database: portfolio
 -- ------------------------------------------------------
--- Server version	8.0.43
+-- Server version	8.0.41
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -43,7 +43,7 @@ CREATE TABLE `assets` (
 
 LOCK TABLES `assets` WRITE;
 /*!40000 ALTER TABLE `assets` DISABLE KEYS */;
-INSERT INTO `assets` VALUES (1,'AAPL','Apple Inc.','STOCK','Technology',195.5000,'2026-01-31 09:45:33'),(2,'MSFT','Microsoft Corporation','STOCK','Technology',380.2500,'2026-01-31 09:45:33'),(3,'GOOGL','Alphabet Inc.','STOCK','Technology',155.8000,'2026-01-31 09:45:33'),(4,'AMZN','Amazon.com Inc.','STOCK','Consumer',180.7500,'2026-01-31 09:45:33'),(5,'TSLA','Tesla Inc.','STOCK','Automotive',245.3000,'2026-01-31 09:45:33'),(6,'META','Meta Platforms Inc.','STOCK','Technology',520.4500,'2026-01-31 09:45:33'),(7,'NVDA','NVIDIA Corporation','STOCK','Technology',875.2000,'2026-01-31 09:45:33'),(8,'JPM','JPMorgan Chase & Co.','STOCK','Finance',195.1000,'2026-01-31 09:45:33'),(9,'V','Visa Inc.','STOCK','Finance',280.6000,'2026-01-31 09:45:33'),(10,'JNJ','Johnson & Johnson','STOCK','Healthcare',155.4500,'2026-01-31 09:45:33'),(11,'UST','US Treasury Bond 10Y','BOND','Fixed Income',98.5000,'2026-01-31 09:45:33'),(12,'VTSAX','Vanguard Total Stock Market Index','ETF','Mixed',245.7500,'2026-01-31 09:45:33');
+INSERT INTO `assets` VALUES (1,'AAPL','Apple Inc.','STOCK','Technology',269.4800,'2026-02-04 05:28:01'),(2,'MSFT','Microsoft Corporation','STOCK','Technology',411.2100,'2026-02-04 05:28:01'),(3,'GOOGL','Alphabet Inc.','STOCK','Technology',339.7100,'2026-02-04 05:28:01'),(4,'AMZN','Amazon.com Inc.','STOCK','Consumer',238.6200,'2026-02-04 05:28:01'),(5,'TSLA','Tesla Inc.','STOCK','Automotive',421.9600,'2026-02-04 05:28:01'),(6,'META','Meta Platforms Inc.','STOCK','Technology',691.7000,'2026-02-04 05:28:01'),(7,'NVDA','NVIDIA Corporation','STOCK','Technology',180.3400,'2026-02-04 05:28:01'),(8,'JPM','JPMorgan Chase & Co.','STOCK','Finance',314.8500,'2026-02-04 05:28:01'),(9,'V','Visa Inc.','STOCK','Finance',328.9300,'2026-02-04 05:28:01'),(10,'JNJ','Johnson & Johnson','STOCK','Healthcare',233.1000,'2026-02-04 05:28:01'),(11,'UST','US Treasury Bond 10Y','BOND','Fixed Income',43.2900,'2026-02-04 05:28:01'),(12,'VTSAX','Vanguard Total Stock Market Index','ETF','Mixed',165.4500,'2026-02-04 05:28:01');
 /*!40000 ALTER TABLE `assets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,7 +63,7 @@ CREATE TABLE `holdings` (
   UNIQUE KEY `asset_id` (`asset_id`),
   KEY `idx_holdings_asset_id` (`asset_id`),
   CONSTRAINT `holdings_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `holdings` (
 
 LOCK TABLES `holdings` WRITE;
 /*!40000 ALTER TABLE `holdings` DISABLE KEYS */;
-INSERT INTO `holdings` VALUES (1,1,150.0000,155.0000),(2,2,75.0000,320.0000),(3,3,20.0000,130.0000),(4,4,40.0000,150.0000),(5,5,35.0000,215.7100),(6,6,10.0000,450.0000),(7,7,5.0000,750.0000);
+INSERT INTO `holdings` VALUES (1,1,151.0000,155.7581),(2,2,75.0000,320.0000),(3,3,20.0000,130.0000),(4,4,40.0000,150.0000),(5,5,35.0000,215.7100),(6,6,10.0000,450.0000),(7,7,5.0000,750.0000),(8,12,100.0000,245.7500);
 /*!40000 ALTER TABLE `holdings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +94,7 @@ CREATE TABLE `transactions` (
   KEY `idx_transactions_asset_id` (`asset_id`),
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`id`) ON DELETE CASCADE,
   CONSTRAINT `transactions_chk_1` CHECK ((`type` in (_utf8mb4'BUY',_utf8mb4'SELL')))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES (1,1,'BUY',100.0000,150.0000,'2025-07-31 09:45:33'),(2,1,'BUY',50.0000,165.0000,'2025-10-31 09:45:33'),(3,2,'BUY',75.0000,320.0000,'2025-08-31 09:45:33'),(4,3,'BUY',30.0000,120.0000,'2025-09-30 09:45:33'),(5,3,'SELL',10.0000,155.0000,'2025-12-31 09:45:33'),(6,4,'BUY',40.0000,150.0000,'2025-11-30 09:45:33'),(7,5,'BUY',20.0000,200.0000,'2025-10-31 09:45:33'),(8,5,'BUY',15.0000,230.0000,'2025-12-31 09:45:33'),(9,6,'BUY',10.0000,450.0000,'2025-11-30 09:45:33'),(10,7,'BUY',5.0000,750.0000,'2025-12-31 09:45:33');
+INSERT INTO `transactions` VALUES (1,1,'BUY',100.0000,150.0000,'2025-08-02 05:11:53'),(2,1,'BUY',50.0000,165.0000,'2025-11-02 05:11:53'),(3,2,'BUY',75.0000,320.0000,'2025-09-02 05:11:53'),(4,3,'BUY',30.0000,120.0000,'2025-10-02 05:11:53'),(5,3,'SELL',10.0000,155.0000,'2026-01-02 05:11:53'),(6,4,'BUY',40.0000,150.0000,'2025-12-02 05:11:53'),(7,5,'BUY',20.0000,200.0000,'2025-11-02 05:11:53'),(8,5,'BUY',15.0000,230.0000,'2026-01-02 05:11:53'),(9,6,'BUY',10.0000,450.0000,'2025-12-02 05:11:53'),(10,7,'BUY',5.0000,750.0000,'2026-01-02 05:11:53'),(11,12,'BUY',100.0000,245.7500,'2026-02-04 04:08:41'),(12,1,'BUY',1.0000,269.4800,'2026-02-04 05:23:17');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-31 15:15:53
+-- Dump completed on 2026-02-04  5:28:23
