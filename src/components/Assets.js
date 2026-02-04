@@ -281,7 +281,7 @@ const Assets = () => {
                         className="btn btn-primary"
                         onClick={() => handleBuyAsset(asset)}
                       >
-                        Buy
+                        Add
                       </button>
                       <button
                         className={`btn ${watchlist.has(asset.id) ? 'btn-success' : 'btn-secondary'}`}

@@ -75,6 +75,9 @@ export const updateAlert = (id, alert) => api.put(`/alerts/${id}`, alert);
 export const deleteAlert = (id) => api.delete(`/alerts/${id}`);
 export const checkAlerts = () => api.get('/alerts/check');
 
+// Asset history (optional - backend may or may not implement)
+export const getAssetHistory = (symbol) => api.get(`/assets/symbol/${symbol}/history`);
+
 // Risk & Performance API calls
 export const getRiskAnalysis = (portfolioId) => api.get(`/api/analysis/risk/${portfolioId}`);
 export const getPerformance = (portfolioId) => api.get(`/api/analysis/performance/${portfolioId}`);

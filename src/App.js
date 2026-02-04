@@ -50,10 +50,6 @@ function App() {
 
       <nav className="navbar">
         <h1>GrowMore</h1>
-        <div className="user-section">
-          <span style={{color: 'var(--text-muted)', fontSize: '14px', marginRight: '15px'}}>Market Open</span>
-          <button className="btn-primary">Connect Wallet</button>
-        </div>
       </nav>
 
       <div className="tabs">

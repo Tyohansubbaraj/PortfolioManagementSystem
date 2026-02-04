@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as apiService from '../services/api';
 
 const Holdings = () => {
@@ -17,6 +17,9 @@ const Holdings = () => {
     totalPLPercentage: 0,
   });
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [hoverTicker, setHoverTicker] = useState(null);
+  const [historyCache, setHistoryCache] = useState({});
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     fetchHoldingsData();
@@ -140,6 +143,82 @@ const Holdings = () => {
     };
   };
 
+  const generateSparklineFromValues = (values) => {
+    // values: number[]
+    const points = values.length || 10;
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const width = 120;
+    const height = 40;
+    const path = values.map((v, i) => {
+      const x = (i / (points - 1)) * width;
+      const y = height - ((v - min) / (max - min || 1)) * height;
+      return `${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`;
+    }).join(' ');
+
+    return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"><path d="${path}" fill="none" stroke="#667eea" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+  };
+
+  const fetchHistoryForSymbol = async (symbol) => {
+    if (!symbol) return null;
+    if (historyCache[symbol]) return historyCache[symbol];
+    try {
+      const res = await apiService.getAssetHistory(symbol);
+      if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+        let values = [];
+        const first = res.data[0];
+        if (typeof first === 'number') {
+          values = res.data.map((n) => parseFloat(n));
+        } else if (Array.isArray(first) && first.length >= 2) {
+          // tuple like [date, price]
+          values = res.data.map((p) => parseFloat(p[1]));
+        } else if (first && typeof first === 'object') {
+          if ('close' in first) values = res.data.map((p) => parseFloat(p.close));
+          else if ('price' in first) values = res.data.map((p) => parseFloat(p.price));
+          else if ('closePrice' in first) values = res.data.map((p) => parseFloat(p.closePrice));
+          else {
+            // try to extract any numeric field
+            const maybe = Object.values(first).find((v) => typeof v === 'number' || !isNaN(parseFloat(v)));
+            if (maybe !== undefined) values = res.data.map((p) => parseFloat(Object.values(p).find(v => typeof v === 'number' || !isNaN(parseFloat(v)))));
+          }
+        }
+
+        if (values.length > 0) {
+          setHistoryCache((c) => ({ ...c, [symbol]: values }));
+          return values;
+        }
+      }
+    } catch (err) {
+      // ignore, fallback to synthetic
+    }
+    return null;
+  };
+
+  const generateSyntheticValues = (avg, current, points = 10) => {
+    return Array.from({ length: points }, (_, i) => {
+      const t = i / (points - 1);
+      const base = avg + (current - avg) * t;
+      const noise = (Math.sin(i * 2.3) * 0.02) * (Math.abs(current - avg) || 1);
+      return base + noise;
+    });
+  };
+
+  const handleMouseEnter = async (holding) => {
+    setHoverTicker({ id: holding.id });
+    const details = getHoldingDetails(holding);
+    if (details) {
+      const history = await fetchHistoryForSymbol(details.symbol);
+      if (history) {
+        const svg = generateSparklineFromValues(history);
+        setHoverTicker({ id: holding.id, svg });
+      }
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoverTicker(null);
+  };
+
   if (loading) {
     return (
       <div className="loading">
@@ -206,7 +285,12 @@ const Holdings = () => {
 
                 return (
                   <tr key={holding.id}>
-                    <td className="ticker">{details.symbol}</td>
+                    <td className="ticker" onMouseEnter={() => handleMouseEnter(holding)} onMouseLeave={handleMouseLeave}>
+                      {details.symbol}
+                      {hoverTicker && hoverTicker.id === holding.id && (
+                        <div className="tooltip-spark" dangerouslySetInnerHTML={{ __html: hoverTicker.svg }} style={{ position: 'absolute', background: 'white', padding: 8, borderRadius: 8, boxShadow: '0 6px 20px rgba(16,24,40,0.12)', transform: 'translateY(10px)', zIndex: 50 }} />
+                      )}
+                    </td>
                     <td>{details.name}</td>
                     <td>{details.quantity.toFixed(4)}</td>
                     <td>${details.avgBuyPrice.toFixed(2)}</td>
