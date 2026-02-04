@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as apiService from '../services/api';
+import ChartModal from './ChartModal';
 
 const Holdings = () => {
   const [holdings, setHoldings] = useState([]);
@@ -7,6 +8,8 @@ const Holdings = () => {
   const [loading, setLoading] = useState(true);
   const [showSellModal, setShowSellModal] = useState(false);
   const [sellingHolding, setSellingHolding] = useState(null);
+  const [showChartModal, setShowChartModal] = useState(false);
+  const [selectedHolding, setSelectedHolding] = useState(null);
   const [sellFormData, setSellFormData] = useState({
     quantity: '',
   });
@@ -79,6 +82,16 @@ const Holdings = () => {
     setSellingHolding(holding);
     setSellFormData({ quantity: '' });
     setShowSellModal(true);
+  };
+
+  const handleShowChart = (holding) => {
+    setSelectedHolding(holding);
+    setShowChartModal(true);
+  };
+
+  const handleCloseChart = () => {
+    setShowChartModal(false);
+    setSelectedHolding(null);
   };
 
   const handleConfirmSell = async () => {
@@ -205,7 +218,7 @@ const Holdings = () => {
                 if (!details) return null;
 
                 return (
-                  <tr key={holding.id}>
+                  <tr key={holding.id} onClick={() => handleShowChart(holding)} style={{ cursor: 'pointer' }}>
                     <td className="ticker">{details.symbol}</td>
                     <td>{details.name}</td>
                     <td>{details.quantity.toFixed(4)}</td>
@@ -217,13 +230,20 @@ const Holdings = () => {
                     <td className={parseFloat(details.plPercentage) >= 0 ? 'positive' : 'negative'}>
                       {details.plPercentage}%
                     </td>
-                    <td>
+                    <td onClick={(e) => e.stopPropagation()}>
                       <div className="actions">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleShowChart(holding)}
+                          style={{ marginRight: '5px' }}
+                        >
+                          Chart
+                        </button>
                         <button
                           className="btn btn-danger"
                           onClick={() => handleSellAsset(holding)}
                         >
-                            Remove
+                          Remove
                         </button>
                       </div>
                     </td>
@@ -276,11 +296,19 @@ const Holdings = () => {
                 Cancel
               </button>
               <button className="btn btn-danger" onClick={handleConfirmSell}>
-                Sell
+                Remove
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {showChartModal && selectedHolding && (
+        <ChartModal
+          holdingId={selectedHolding.id}
+          symbol={assets.find((a) => a.id === selectedHolding.asset.id)?.symbol || 'N/A'}
+          onClose={handleCloseChart}
+        />
       )}
     </div>
   );

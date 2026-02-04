@@ -22,6 +22,8 @@ const Assets = () => {
   });
   const [buyFormData, setBuyFormData] = useState({
     quantity: '',
+    buyDate: '',
+    price: '',
   });
   const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -88,7 +90,7 @@ const Assets = () => {
 
   const handleBuyAsset = (asset) => {
     setBuyingAsset(asset);
-    setBuyFormData({ quantity: '' });
+    setBuyFormData({ quantity: '', buyDate: '', price: '' });
     setShowBuyModal(true);
   };
 
@@ -98,9 +100,33 @@ const Assets = () => {
       return;
     }
 
+    if (!buyFormData.buyDate) {
+      setMessage({ type: 'error', text: 'Please enter buy date' });
+      return;
+    }
+
     try {
       const quantity = parseFloat(buyFormData.quantity);
-      const price = parseFloat(buyingAsset.currentPrice);
+      let price = buyFormData.price ? parseFloat(buyFormData.price) : null;
+
+      // If price is not provided, fetch it from the API using the buy date
+      if (!price) {
+        try {
+          const priceResponse = await apiService.getBuyPrice(buyingAsset.symbol, buyFormData.buyDate);
+          price = priceResponse.data.price;
+          if (!price) {
+            setMessage({ type: 'error', text: 'Could not fetch price for the selected date. Please enter price manually.' });
+            return;
+          }
+        } catch (err) {
+          console.error('Error fetching price:', err);
+          setMessage({ type: 'error', text: 'Could not fetch price for the selected date. Please enter price manually.' });
+          return;
+        }
+      }
+
+      // Convert buyDate from YYYY-MM-DD to ISO 8601 LocalDateTime format (YYYY-MM-DDTHH:MM:SS)
+      const buyDateISO = `${buyFormData.buyDate}T00:00:00`;
 
       // Check if holding exists
       let holdingExists = false;
@@ -126,6 +152,7 @@ const Assets = () => {
           asset: { id: buyingAsset.id },
           totalQuantity: quantity,
           avgBuyPrice: price,
+          buyDate: buyDateISO,
         });
       }
 
@@ -135,7 +162,7 @@ const Assets = () => {
         type: 'BUY',
         quantity: quantity,
         price: price,
-        tradeDate: new Date().toISOString(),
+        tradeDate: buyDateISO,
       });
 
       setMessage({ type: 'success', text: `Bought ${quantity} shares of ${buyingAsset.symbol}` });
@@ -376,7 +403,6 @@ const Assets = () => {
       )}
 
       {showBuyModal && buyingAsset && (
-      // add purchase date so that we can fetch price on that day
         <div className="modal active">
           <div className="modal-content">
             <div className="modal-header">
@@ -392,10 +418,26 @@ const Assets = () => {
             </div>
 
             <div className="form-group">
-              <label>Current Price</label>
-              <div style={{ padding: '8px 10px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                ${parseFloat(buyingAsset.currentPrice).toFixed(2)}
-              </div>
+              <label>Buy Date <span style={{ color: 'red' }}>*</span></label>
+              <input
+                type="date"
+                name="buyDate"
+                value={buyFormData.buyDate}
+                onChange={handleBuyInputChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Price (Optional - if not provided, will be looked up for the buy date)</label>
+              <input
+                type="number"
+                name="price"
+                value={buyFormData.price}
+                onChange={handleBuyInputChange}
+                placeholder="e.g., 150.50 (leave empty to auto-lookup)"
+                step="0.01"
+                min="0"
+              />
             </div>
 
             <div className="form-group">
@@ -416,7 +458,7 @@ const Assets = () => {
                 Cancel
               </button>
               <button className="btn btn-primary" onClick={handleConfirmBuy}>
-                Buy
+                Add
               </button>
             </div>
           </div>
