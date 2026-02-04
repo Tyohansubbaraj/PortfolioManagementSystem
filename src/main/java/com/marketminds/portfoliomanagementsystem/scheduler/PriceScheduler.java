@@ -15,7 +15,7 @@ public class PriceScheduler {
         this.assetPriceUpdater = assetPriceUpdater;
     }
 
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     public void updatePrices() {
         assetPriceUpdater.updateAllAssetPrices();
     }

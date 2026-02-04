@@ -34,9 +34,9 @@ class AssetRepositoryTest {
     @BeforeEach
     void setUp() {
         // Create test assets
-        asset1 = new Asset("AAPL", "Apple Inc.", "Stock", "Technology", new BigDecimal("150.25"), LocalDateTime.now());
-        asset2 = new Asset("MSFT", "Microsoft Corporation", "Stock", "Technology", new BigDecimal("320.50"), LocalDateTime.now());
-        asset3 = new Asset("GOOGL", "Alphabet Inc.", "Stock", "Technology", new BigDecimal("140.75"), LocalDateTime.now());
+        asset1 = new Asset("PLTR", "Palantir Technologies Inc.", "Stock", "Technology", new BigDecimal("150.25"), LocalDateTime.now());
+        asset2 = new Asset("MINING", "The Mining Company", "Stock", "Materials", new BigDecimal("320.50"), LocalDateTime.now());
+        asset3 = new Asset("RKLB", "Rocket Lab USA Inc.", "Stock", "Aerospace", new BigDecimal("140.75"), LocalDateTime.now());
 
         // Persist assets to test database
         entityManager.persist(asset1);
@@ -48,12 +48,12 @@ class AssetRepositoryTest {
     @Test
     void testFindBySymbol_Success() {
         // Act
-        Optional<Asset> result = assetRepository.findBySymbol("AAPL");
+        Optional<Asset> result = assetRepository.findBySymbol("PLTR");
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals("AAPL", result.get().getSymbol());
-        assertEquals("Apple Inc.", result.get().getName());
+        assertEquals("PLTR", result.get().getSymbol());
+        assertEquals("Palantir Technologies Inc.", result.get().getName());
     }
 
     @Test
@@ -98,7 +98,7 @@ class AssetRepositoryTest {
         List<Asset> techAssets = assetRepository.findBySector("Technology");
 
         // Assert
-        assertEquals(3, techAssets.size());
+        assertEquals(1, techAssets.size());
         assertTrue(techAssets.stream().allMatch(a -> "Technology".equals(a.getSector())));
     }
 
@@ -117,7 +117,7 @@ class AssetRepositoryTest {
         List<Asset> results = assetRepository.findByTypeAndSector("Stock", "Technology");
 
         // Assert
-        assertEquals(3, results.size());
+        assertEquals(1, results.size());
         assertTrue(results.stream().allMatch(a -> "Stock".equals(a.getType()) && "Technology".equals(a.getSector())));
     }
 
@@ -158,7 +158,7 @@ class AssetRepositoryTest {
     @Test
     void testUpdateAsset() {
         // Arrange
-        Optional<Asset> foundAsset = assetRepository.findBySymbol("AAPL");
+        Optional<Asset> foundAsset = assetRepository.findBySymbol("PLTR");
         assertTrue(foundAsset.isPresent());
         Asset assetToUpdate = foundAsset.get();
 
@@ -169,7 +169,7 @@ class AssetRepositoryTest {
         entityManager.flush();
 
         // Assert
-        Optional<Asset> updatedAsset = assetRepository.findBySymbol("AAPL");
+        Optional<Asset> updatedAsset = assetRepository.findBySymbol("PLTR");
         assertTrue(updatedAsset.isPresent());
         assertEquals(new BigDecimal("160.00"), updatedAsset.get().getCurrentPrice());
     }
@@ -177,7 +177,7 @@ class AssetRepositoryTest {
     @Test
     void testDeleteAsset() {
         // Arrange
-        Optional<Asset> foundAsset = assetRepository.findBySymbol("MSFT");
+        Optional<Asset> foundAsset = assetRepository.findBySymbol("MINING");
         assertTrue(foundAsset.isPresent());
 
         // Act
@@ -185,14 +185,14 @@ class AssetRepositoryTest {
         entityManager.flush();
 
         // Assert
-        Optional<Asset> deletedAsset = assetRepository.findBySymbol("MSFT");
+        Optional<Asset> deletedAsset = assetRepository.findBySymbol("MINING");
         assertFalse(deletedAsset.isPresent());
     }
 
     @Test
     void testDeleteById() {
         // Arrange
-        Optional<Asset> foundAsset = assetRepository.findBySymbol("GOOGL");
+        Optional<Asset> foundAsset = assetRepository.findBySymbol("RKLB");
         assertTrue(foundAsset.isPresent());
         Long assetId = foundAsset.get().getId();
 
@@ -208,7 +208,7 @@ class AssetRepositoryTest {
     @Test
     void testFindById() {
         // Arrange
-        Optional<Asset> foundAsset = assetRepository.findBySymbol("AAPL");
+        Optional<Asset> foundAsset = assetRepository.findBySymbol("PLTR");
         assertTrue(foundAsset.isPresent());
         Long assetId = foundAsset.get().getId();
 
@@ -217,6 +217,6 @@ class AssetRepositoryTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals("AAPL", result.get().getSymbol());
+        assertEquals("PLTR", result.get().getSymbol());
     }
 }

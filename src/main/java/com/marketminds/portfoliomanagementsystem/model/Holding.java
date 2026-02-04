@@ -1,6 +1,7 @@
 package com.marketminds.portfoliomanagementsystem.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
 
 @Entity
@@ -13,6 +14,7 @@ public class Holding {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "asset_id", unique = true, nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Asset asset;
 
     @Column(name = "total_quantity", precision = 18, scale = 4, nullable = false)

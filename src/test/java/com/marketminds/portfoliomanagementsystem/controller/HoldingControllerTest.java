@@ -116,7 +116,7 @@ class HoldingControllerTest {
                 holdingController.getHoldingById(1L);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(testHolding, response.getBody());
+        assertEquals(response.getBody(), testHoldingDto);
     }
 
 
