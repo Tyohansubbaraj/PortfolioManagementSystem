@@ -8,7 +8,9 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
+export const downloadExcel = () => api.get('/export/excel', {
+    responseType: 'blob'
+});
 // Asset API calls
 export const getAssets = () => api.get('/assets');
 export const getAssetById = (id) => api.get(`/assets/${id}`);
@@ -26,9 +28,9 @@ export const getHoldingById = (id) => api.get(`/holdings/${id}`);
 export const getHoldingByAssetId = (assetId) => api.get(`/holdings/asset/${assetId}`);
 export const createHolding = (holding) => api.post('/holdings', holding);
 export const updateHolding = (id, holding) => api.put(`/holdings/${id}`, holding);
-export const buyHolding = (id, quantity, price) => 
+export const buyHolding = (id, quantity, price) =>
   api.post(`/holdings/${id}/buy?quantity=${quantity}&price=${price}`);
-export const sellHolding = (id, quantity) => 
+export const sellHolding = (id, quantity) =>
   api.post(`/holdings/${id}/sell?quantity=${quantity}`);
 export const deleteHolding = (id) => api.delete(`/holdings/${id}`);
 
@@ -61,5 +63,22 @@ export const updateWatchlistEntry = (id, entry) => api.put(`/watchlist/${id}`, e
 export const deleteWatchlistEntry = (id) => api.delete(`/watchlist/${id}`);
 export const getWatchlistCount = () => api.get('/watchlist/count');
 export const checkInWatchlist = (assetId) => api.get(`/watchlist/asset/${assetId}/exists`);
+// Add these to your existing api.js file
 
+
+
+// Alerts API calls
+export const getAlerts = () => api.get('/alerts');
+export const getAlert = (id) => api.get(`/alerts/${id}`);
+export const createAlert = (alert) => api.post('/alerts', alert);
+export const updateAlert = (id, alert) => api.put(`/alerts/${id}`, alert);
+export const deleteAlert = (id) => api.delete(`/alerts/${id}`);
+export const checkAlerts = () => api.get('/alerts/check');
+
+// Risk & Performance API calls
+export const getRiskAnalysis = (portfolioId) => api.get(`/api/analysis/risk/${portfolioId}`);
+export const getPerformance = (portfolioId) => api.get(`/api/analysis/performance/${portfolioId}`);
+
+// Multi-Portfolio API calls
+export const getPortfolios = () => api.get('/api/portfolios');
 export default api;

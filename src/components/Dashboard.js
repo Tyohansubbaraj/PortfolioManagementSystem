@@ -168,6 +168,32 @@ const Dashboard = () => {
             {stats.totalPLPercentage}%
           </div>
         </div>
+        return (
+          <div className="dashboard">
+            <div className="dashboard-grid">
+              <div className="stat-card">
+                <div className="stat-label">Invested Capital</div>
+                <div className="stat-value">${stats.totalInvested.toLocaleString()}</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-label">Net Equity</div>
+                <div className="stat-value" style={{color: 'var(--primary)'}}>${stats.currentValue.toLocaleString()}</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-label">Unrealized P&L</div>
+                <div className={`stat-value ${stats.totalPL >= 0 ? 'positive' : 'negative'}`}>
+                  {stats.totalPL >= 0 ? '↑' : '↓'} ${Math.abs(stats.totalPL).toLocaleString()}
+                </div>
+              </div>
+            </div>
+
+            {/* Charts Section */}
+            <div className="card">
+               <h3>Allocation & Performance</h3>
+               {/* Your Recharts code here */}
+            </div>
+          </div>
+        );
 
         <div className="stat-card">
           <h3>Total Assets</h3>
@@ -261,5 +287,6 @@ const Dashboard = () => {
     </div>
   );
 };
+
 
 export default Dashboard;
