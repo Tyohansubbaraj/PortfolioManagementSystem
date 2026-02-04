@@ -101,6 +101,7 @@ public class HoldingServiceImpl implements HoldingService {
         dto.setQuantity(quantity);
         dto.setAvgBuyPrice(avgBuyPrice);
         dto.setCurrentPrice(currentPrice);
+        dto.setBuyDate(holding.getBuyDate());
 
         dto.setTotalInvested(totalInvested);
         dto.setCurrentValue(currentValue);
