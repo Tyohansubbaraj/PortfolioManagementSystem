@@ -3,6 +3,7 @@ package com.marketminds.portfoliomanagementsystem.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "holdings")
@@ -23,21 +24,26 @@ public class Holding {
     @Column(name = "avg_buy_price", precision = 18, scale = 4, nullable = false)
     private BigDecimal avgBuyPrice;
 
+    @Column(name = "buy_date", nullable = false)
+    private LocalDate buyDate;
+
     // Constructors
     public Holding() {
     }
 
-    public Holding(Asset asset, BigDecimal totalQuantity, BigDecimal avgBuyPrice) {
+    public Holding(Asset asset, BigDecimal totalQuantity, BigDecimal avgBuyPrice, LocalDate buyDate) {
         this.asset = asset;
         this.totalQuantity = totalQuantity;
         this.avgBuyPrice = avgBuyPrice;
+        this.buyDate = buyDate;
     }
 
-    public Holding(Long id, Asset asset, BigDecimal totalQuantity, BigDecimal avgBuyPrice) {
+    public Holding(Long id, Asset asset, BigDecimal totalQuantity, BigDecimal avgBuyPrice, LocalDate buyDate) {
         this.id = id;
         this.asset = asset;
         this.totalQuantity = totalQuantity;
         this.avgBuyPrice = avgBuyPrice;
+        this.buyDate = buyDate;
     }
 
     // Getters and Setters
@@ -73,6 +79,14 @@ public class Holding {
         this.avgBuyPrice = avgBuyPrice;
     }
 
+    public LocalDate getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(LocalDate buyDate) {
+        this.buyDate = buyDate;
+    }
+
     // toString() method
     @Override
     public String toString() {
@@ -81,6 +95,7 @@ public class Holding {
                 ", asset=" + asset +
                 ", totalQuantity=" + totalQuantity +
                 ", avgBuyPrice=" + avgBuyPrice +
+                ", buyDate=" + buyDate +
                 '}';
     }
 }

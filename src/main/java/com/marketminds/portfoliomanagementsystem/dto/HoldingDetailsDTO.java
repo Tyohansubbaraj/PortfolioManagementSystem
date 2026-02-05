@@ -1,6 +1,7 @@
 package com.marketminds.portfoliomanagementsystem.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class HoldingDetailsDTO {
 
@@ -11,6 +12,8 @@ public class HoldingDetailsDTO {
     private BigDecimal quantity;
     private BigDecimal avgBuyPrice;
     private BigDecimal currentPrice;
+
+    private LocalDate buyDate;
 
     private BigDecimal totalInvested;
     private BigDecimal currentValue;
@@ -65,6 +68,14 @@ public class HoldingDetailsDTO {
 
     public void setCurrentPrice(BigDecimal currentPrice) {
         this.currentPrice = currentPrice;
+    }
+
+    public LocalDate getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(LocalDate buyDate) {
+        this.buyDate = buyDate;
     }
 
     public BigDecimal getTotalInvested() {

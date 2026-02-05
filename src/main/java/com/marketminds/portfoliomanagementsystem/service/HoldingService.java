@@ -1,7 +1,6 @@
 package com.marketminds.portfoliomanagementsystem.service;
 
 import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
-import com.marketminds.portfoliomanagementsystem.dto.HoldingsSummaryDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 
 import java.math.BigDecimal;

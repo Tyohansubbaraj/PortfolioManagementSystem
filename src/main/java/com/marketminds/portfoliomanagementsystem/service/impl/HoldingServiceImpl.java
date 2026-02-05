@@ -1,7 +1,6 @@
 package com.marketminds.portfoliomanagementsystem.service.impl;
 
 import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
-import com.marketminds.portfoliomanagementsystem.dto.HoldingsSummaryDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 import com.marketminds.portfoliomanagementsystem.repository.HoldingRepository;
 import com.marketminds.portfoliomanagementsystem.service.HoldingService;
@@ -101,6 +100,7 @@ public class HoldingServiceImpl implements HoldingService {
         dto.setQuantity(quantity);
         dto.setAvgBuyPrice(avgBuyPrice);
         dto.setCurrentPrice(currentPrice);
+        dto.setBuyDate(holding.getBuyDate());
 
         dto.setTotalInvested(totalInvested);
         dto.setCurrentValue(currentValue);

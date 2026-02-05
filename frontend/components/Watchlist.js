@@ -177,7 +177,7 @@ const Watchlist = () => {
                             className="btn btn-primary"
                             onClick={() => handleBuyFromWatchlist(entry.asset.id)}
                           >
-                            Buy
+                            Add
                           </button>
                           <button
                             className="btn btn-danger"
@@ -241,7 +241,7 @@ const Watchlist = () => {
                 Cancel
               </button>
               <button className="btn btn-primary" onClick={handleConfirmBuy}>
-                Buy
+                Add
               </button>
             </div>
           </div>

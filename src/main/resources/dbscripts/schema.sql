@@ -41,6 +41,7 @@ CREATE TABLE holdings (
     asset_id BIGINT UNIQUE NOT NULL,
     total_quantity DECIMAL(18,4) NOT NULL,
     avg_buy_price DECIMAL(18,4) NOT NULL,
+    buy_date DATE NOT NULL,
     FOREIGN KEY (asset_id) REFERENCES assets(id) ON DELETE CASCADE
 );
 
@@ -112,14 +113,14 @@ INSERT INTO transactions (asset_id, type, quantity, price, trade_date) VALUES
 
 -- Insert sample holdings (Current Portfolio)
 -- Holdings must reference existing assets from the assets table
-INSERT INTO holdings (asset_id, total_quantity, avg_buy_price) VALUES
-(1, 150, 155.00),      -- AAPL
-(2, 75, 320.00),       -- MSFT
-(3, 20, 130.00),       -- GOOGL
-(4, 40, 150.00),       -- AMZN
-(5, 35, 215.71),       -- TSLA
-(6, 10, 450.00),       -- META
-(7, 5, 750.00);        -- NVDA
+INSERT INTO holdings (asset_id, total_quantity, avg_buy_price, buy_date) VALUES
+(1, 150, 155.00, '2025-08-04'),      -- AAPL - bought 6 months ago
+(2, 75, 320.00, '2025-09-04'),       -- MSFT - bought 5 months ago
+(3, 20, 130.00, '2025-10-04'),       -- GOOGL - bought 4 months ago
+(4, 40, 150.00, '2025-12-04'),       -- AMZN - bought 2 months ago
+(5, 35, 215.71, '2025-11-04'),       -- TSLA - bought 3 months ago
+(6, 10, 450.00, '2025-12-04'),       -- META - bought 2 months ago
+(7, 5, 750.00, '2026-01-04');        -- NVDA - bought 1 month ago
 
 -- Insert sample watchlist items (Monitoring)
 -- Watchlist references existing assets

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ class HoldingRepositoryTest {
         entityManager.persist(asset2);
 
         // Create and persist holding
-        holding1 = new Holding(asset1, new BigDecimal("100.0000"), new BigDecimal("145.50"));
+        holding1 = new Holding(asset1, new BigDecimal("100.0000"), new BigDecimal("145.50"), LocalDate.now());
         entityManager.persist(holding1);
         entityManager.flush();
     }
@@ -69,7 +70,7 @@ class HoldingRepositoryTest {
     @Test
     void testSaveHolding() {
         // Arrange
-        Holding newHolding = new Holding(asset2, new BigDecimal("50.5000"), new BigDecimal("310.00"));
+        Holding newHolding = new Holding(asset2, new BigDecimal("50.5000"), new BigDecimal("310.00"), LocalDate.now());
 
         // Act
         Holding savedHolding = holdingRepository.save(newHolding);
@@ -149,7 +150,7 @@ class HoldingRepositoryTest {
     @Test
     void testFindAll() {
         // Arrange
-        Holding holding2 = new Holding(asset2, new BigDecimal("75.0000"), new BigDecimal("315.00"));
+        Holding holding2 = new Holding(asset2, new BigDecimal("75.0000"), new BigDecimal("315.00"), LocalDate.now());
         entityManager.persist(holding2);
         entityManager.flush();
 
@@ -158,5 +159,76 @@ class HoldingRepositoryTest {
 
         // Assert
         assertEquals(2, allHoldings.size());
+    }
+
+    @Test
+    void testBuyDate_PersistenceAndRetrieval() {
+        // Arrange
+        LocalDate expectedBuyDate = LocalDate.of(2026, 1, 15);
+        Holding holdingWithBuyDate = new Holding(asset2, new BigDecimal("50.0000"), new BigDecimal("320.00"), expectedBuyDate);
+
+        // Act
+        holdingRepository.save(holdingWithBuyDate);
+        entityManager.flush();
+        Optional<Holding> retrievedHolding = holdingRepository.findByAssetId(asset2.getId());
+
+        // Assert
+        assertTrue(retrievedHolding.isPresent());
+        assertEquals(expectedBuyDate, retrievedHolding.get().getBuyDate());
+    }
+
+    @Test
+    void testBuyDate_UpdateBuyDate() {
+        // Arrange
+        Optional<Holding> foundHolding = holdingRepository.findByAssetId(asset1.getId());
+        assertTrue(foundHolding.isPresent());
+        Holding holdingToUpdate = foundHolding.get();
+
+        LocalDate newBuyDate = LocalDate.of(2025, 12, 20);
+
+        // Act
+        holdingToUpdate.setBuyDate(newBuyDate);
+        holdingRepository.save(holdingToUpdate);
+        entityManager.flush();
+
+        // Assert
+        Optional<Holding> updatedHolding = holdingRepository.findByAssetId(asset1.getId());
+        assertTrue(updatedHolding.isPresent());
+        assertEquals(newBuyDate, updatedHolding.get().getBuyDate());
+    }
+
+    @Test
+    void testBuyDate_WithCurrentDate() {
+        // Arrange
+        LocalDate today = LocalDate.now();
+        Holding holdingWithCurrentDate = new Holding(asset2, new BigDecimal("25.0000"), new BigDecimal("315.00"), today);
+
+        // Act
+        Holding savedHolding = holdingRepository.save(holdingWithCurrentDate);
+        entityManager.flush();
+
+        // Assert
+        assertNotNull(savedHolding.getId());
+        assertEquals(today, savedHolding.getBuyDate());
+    }
+
+    @Test
+    void testHolding_AllFieldsIncludingBuyDate() {
+        // Arrange
+        Long expectedAssetId = asset1.getId();
+        BigDecimal expectedQuantity = new BigDecimal("100.0000");
+        BigDecimal expectedAvgPrice = new BigDecimal("145.50");
+
+        // Act
+        Optional<Holding> result = holdingRepository.findByAssetId(expectedAssetId);
+
+        // Assert
+        assertTrue(result.isPresent());
+        Holding holding = result.get();
+        assertNotNull(holding.getId());
+        assertEquals(expectedAssetId, holding.getAsset().getId());
+        assertEquals(expectedQuantity, holding.getTotalQuantity());
+        assertEquals(expectedAvgPrice, holding.getAvgBuyPrice());
+        assertNotNull(holding.getBuyDate());
     }
 }

@@ -24,6 +24,7 @@ export const checkAssetExists = (symbol) => api.get(`/assets/exists/${symbol}`);
 export const getHoldings = () => api.get('/holdings');
 export const getHoldingById = (id) => api.get(`/holdings/${id}`);
 export const getHoldingByAssetId = (assetId) => api.get(`/holdings/asset/${assetId}`);
+export const getHoldingChart = (holdingId) => api.get(`/holdings/${holdingId}/chart`);
 export const createHolding = (holding) => api.post('/holdings', holding);
 export const updateHolding = (id, holding) => api.put(`/holdings/${id}`, holding);
 export const buyHolding = (id, quantity, price) => 
@@ -61,5 +62,12 @@ export const updateWatchlistEntry = (id, entry) => api.put(`/watchlist/${id}`, e
 export const deleteWatchlistEntry = (id) => api.delete(`/watchlist/${id}`);
 export const getWatchlistCount = () => api.get('/watchlist/count');
 export const checkInWatchlist = (assetId) => api.get(`/watchlist/asset/${assetId}/exists`);
+
+// Python API calls for price lookups
+export const getBuyPrice = (symbol, buyDate) =>
+  axios.post('http://localhost:8000/buy-price', {
+    symbol,
+    buy_date: buyDate
+  });
 
 export default api;
