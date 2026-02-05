@@ -10,10 +10,14 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [aiRecommendation, setAiRecommendation] = useState(null);
+  const [aiLoading, setAiLoading] = useState(true);
+  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     fetchChartData();
-  }, [holdingId]);
+    fetchAIRecommendation();
+  }, [holdingId, symbol]);
 
   const fetchChartData = async () => {
     try {
@@ -31,6 +35,20 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
       setError('Failed to load chart data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAIRecommendation = async () => {
+    try {
+      setAiLoading(true);
+      setAiError('');
+      const response = await apiService.getAIRecommendation(symbol);
+      setAiRecommendation(response.data);
+    } catch (err) {
+      console.error('Error fetching AI recommendation:', err);
+      setAiError('Failed to load AI recommendation');
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -209,35 +227,137 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
               </div>
 
               {/* Recommendation */}
-              <div style={{
-                padding: '12px',
-                backgroundColor: recommendation.recommendation === 'BUY' ? '#c8e6c9' :
-                  recommendation.recommendation === 'SELL' ? '#ffcdd2' : '#fff9c4',
-                border: `2px solid ${recommendation.recommendation === 'BUY' ? '#4caf50' :
-                  recommendation.recommendation === 'SELL' ? '#d32f2f' : '#fbc02d'}`,
-                borderRadius: '4px',
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <div style={{ fontSize: '11px', color: '#666', marginBottom: '3px' }}>AI Recommendation</div>
-                    <div style={{
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                      color: recommendation.recommendation === 'BUY' ? '#2e7d32' :
-                        recommendation.recommendation === 'SELL' ? '#c62828' : '#f57f17'
-                    }}>
-                      {recommendation.recommendation}
+              {aiLoading && (
+                <div style={{
+                  padding: '12px',
+                  backgroundColor: '#f5f5f5',
+                  border: '2px solid #ccc',
+                  borderRadius: '4px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '11px', color: '#666', marginBottom: '5px' }}>AI Recommendation</div>
+                  <div className="spinner" style={{ display: 'inline-block', marginTop: '5px' }}></div>
+                  <p style={{ margin: '5px 0 0 0', fontSize: '12px', color: '#666' }}>Loading AI analysis...</p>
+                </div>
+              )}
+
+              {aiError && (
+                <div style={{
+                  padding: '12px',
+                  backgroundColor: '#ffebee',
+                  border: '2px solid #d32f2f',
+                  borderRadius: '4px',
+                  color: '#d32f2f'
+                }}>
+                  <div style={{ fontSize: '11px', marginBottom: '5px' }}>AI Recommendation</div>
+                  <div style={{ fontSize: '12px' }}>{aiError}</div>
+                </div>
+              )}
+
+              {!aiLoading && !aiError && aiRecommendation && (
+                <div style={{
+                  padding: '15px',
+                  backgroundColor: '#e3f2fd',
+                  border: '2px solid #2196F3',
+                  borderRadius: '6px',
+                  marginTop: '10px'
+                }}>
+                  <div style={{ fontSize: '13px', color: '#1976d2', marginBottom: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                    <span style={{ fontSize: '18px', marginRight: '8px' }}>🤖</span>
+                    AI Investment Recommendation
+                  </div>
+                  <div style={{
+                    fontSize: '13px',
+                    color: '#333',
+                    lineHeight: '1.8',
+                    backgroundColor: '#fff',
+                    padding: '15px',
+                    borderRadius: '6px',
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                    whiteSpace: 'pre-wrap',
+                    wordWrap: 'break-word',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                  }}>
+                    {aiRecommendation.recommendation
+                      .split('\n')
+                      .map((line, index) => {
+                        // Parse bold text (**text**)
+                        const renderLineWithBold = (text) => {
+                          const parts = text.split(/(\*\*[^\*]+\*\*)/);
+                          return parts.map((part, idx) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return (
+                                <strong key={idx} style={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                  {part.replace(/\*\*/g, '')}
+                                </strong>
+                              );
+                            }
+                            return <span key={idx}>{part}</span>;
+                          });
+                        };
+
+                        // Check if line starts with a bullet point or dash
+                        if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
+                          return (
+                            <div key={index} style={{
+                              marginLeft: '15px',
+                              marginBottom: '8px',
+                              display: 'flex',
+                              alignItems: 'flex-start'
+                            }}>
+                              <span style={{ color: '#2196F3', marginRight: '10px', fontWeight: 'bold', marginTop: '2px' }}>●</span>
+                              <span>{renderLineWithBold(line.trim().replace(/^[•\-*]\s*/, ''))}</span>
+                            </div>
+                          );
+                        } else if (line.trim().match(/^\d+\./)) {
+                          // Handle numbered lists
+                          return (
+                            <div key={index} style={{
+                              marginLeft: '15px',
+                              marginBottom: '8px',
+                              display: 'flex',
+                              alignItems: 'flex-start'
+                            }}>
+                              <span style={{ color: '#2196F3', marginRight: '10px', fontWeight: 'bold', minWidth: '25px' }}>
+                                {line.trim().match(/^\d+/)[0]}.
+                              </span>
+                              <span>{renderLineWithBold(line.trim().replace(/^\d+\.\s*/, ''))}</span>
+                            </div>
+                          );
+                        } else if (line.trim() === '') {
+                          // Empty line
+                          return <div key={index} style={{ height: '8px' }} />;
+                        } else if (line.trim().match(/^[A-Z][^:]*:/) || line.trim().match(/^\*\*[^\*]+\*\*/)) {
+                          // Section headers or bold text
+                          return (
+                            <div key={index} style={{
+                              marginTop: '12px',
+                              marginBottom: '8px',
+                              fontWeight: 'bold',
+                              color: '#1976d2',
+                              fontSize: '13px'
+                            }}>
+                              {renderLineWithBold(line.trim())}
+                            </div>
+                          );
+                        } else {
+                          // Regular text
+                          return (
+                            <div key={index} style={{ marginBottom: '6px' }}>
+                              {renderLineWithBold(line)}
+                            </div>
+                          );
+                        }
+                      })}
+                  </div>
+                  {aiRecommendation.status === 'error' && (
+                    <div style={{ fontSize: '12px', color: '#d32f2f', marginTop: '10px', padding: '8px', backgroundColor: '#ffebee', borderRadius: '4px' }}>
+                      ⚠️ Error: {aiRecommendation.message}
                     </div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '11px', color: '#666', marginBottom: '3px' }}>Confidence</div>
-                    <div style={{ fontSize: '12px', fontWeight: 'bold' }}>{recommendation.confidence}</div>
-                  </div>
+                  )}
                 </div>
-                <div style={{ fontSize: '11px', color: '#666', marginTop: '5px' }}>
-                  {recommendation.reason}
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="modal-footer">

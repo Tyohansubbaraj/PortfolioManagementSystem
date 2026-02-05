@@ -70,4 +70,7 @@ export const getBuyPrice = (symbol, buyDate) =>
     buy_date: buyDate
   });
 
+// AI Financial Advisor API calls
+export const getAIRecommendation = (symbol) => api.get(`/advisor/recommendation/${symbol}`);
+
 export default api;
