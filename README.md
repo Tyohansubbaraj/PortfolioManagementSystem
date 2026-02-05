@@ -61,9 +61,6 @@ A comprehensive full-stack web application for managing investment portfolios. T
 
 ```
 PortfolioManagementSystem/
-├── backend/                          # Frontend React application
-│   └── [React components and assets]
-│
 ├── src/
 │   ├── main/
 │   │   ├── java/com/marketminds/portfoliomanagementsystem/
@@ -377,37 +374,3 @@ npm test
 - [Architecture Documentation](./ARCHITECTURE.md) - System design and components
 - [API Documentation](./API_DOCUMENTATION.md) - Detailed API specifications
 - [API Architecture](./API_ARCHITECTURE.md) - API design patterns
-
-## 🤝 Contributing
-
-1. Create a feature branch: `git checkout -b feature/YourFeature`
-2. Commit your changes: `git commit -m 'Add YourFeature'`
-3. Push to the branch: `git push origin feature/YourFeature`
-4. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the ISC License - see the package.json file for details.
-
-## 📞 Support
-
-For support, issues, or questions:
-- Open an issue on GitHub
-- Contact: MarketMinds Team
-
-## 🎯 Roadmap
-
-- [ ] User authentication and authorization
-- [ ] Multiple portfolio support
-- [ ] Advanced analytics and reporting
-- [ ] Mobile app (React Native)
-- [ ] Real-time stock price integration (API)
-- [ ] Export reports (PDF, Excel)
-- [ ] Performance benchmarking
-- [ ] Risk analysis tools
-
----
-
-**Version**: 1.0.0  
-**Last Updated**: February 5, 2026  
-**Maintained by**: MarketMinds
