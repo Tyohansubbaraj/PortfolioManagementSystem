@@ -282,6 +282,21 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
                     {aiRecommendation.recommendation
                       .split('\n')
                       .map((line, index) => {
+                        // Parse bold text (**text**)
+                        const renderLineWithBold = (text) => {
+                          const parts = text.split(/(\*\*[^\*]+\*\*)/);
+                          return parts.map((part, idx) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return (
+                                <strong key={idx} style={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                  {part.replace(/\*\*/g, '')}
+                                </strong>
+                              );
+                            }
+                            return <span key={idx}>{part}</span>;
+                          });
+                        };
+
                         // Check if line starts with a bullet point or dash
                         if (line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*')) {
                           return (
@@ -292,7 +307,7 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
                               alignItems: 'flex-start'
                             }}>
                               <span style={{ color: '#2196F3', marginRight: '10px', fontWeight: 'bold', marginTop: '2px' }}>●</span>
-                              <span>{line.trim().replace(/^[•\-*]\s*/, '')}</span>
+                              <span>{renderLineWithBold(line.trim().replace(/^[•\-*]\s*/, ''))}</span>
                             </div>
                           );
                         } else if (line.trim().match(/^\d+\./)) {
@@ -307,7 +322,7 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
                               <span style={{ color: '#2196F3', marginRight: '10px', fontWeight: 'bold', minWidth: '25px' }}>
                                 {line.trim().match(/^\d+/)[0]}.
                               </span>
-                              <span>{line.trim().replace(/^\d+\.\s*/, '')}</span>
+                              <span>{renderLineWithBold(line.trim().replace(/^\d+\.\s*/, ''))}</span>
                             </div>
                           );
                         } else if (line.trim() === '') {
@@ -323,14 +338,14 @@ const ChartModal = ({ holdingId, symbol, onClose }) => {
                               color: '#1976d2',
                               fontSize: '13px'
                             }}>
-                              {line.trim().replace(/\*\*/g, '')}
+                              {renderLineWithBold(line.trim())}
                             </div>
                           );
                         } else {
                           // Regular text
                           return (
                             <div key={index} style={{ marginBottom: '6px' }}>
-                              {line}
+                              {renderLineWithBold(line)}
                             </div>
                           );
                         }
