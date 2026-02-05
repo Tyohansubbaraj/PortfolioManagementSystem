@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './styles/App.css';
-import Dashboard from './src/components/Dashboard';
-import Assets from './src/components/Assets';
-import Holdings from './src/components/Holdings';
-import Transactions from './src/components/Transactions';
-import Watchlist from './src/components/Watchlist';
+import Dashboard from './components/Dashboard';
+import Assets from './components/Assets';
+import Holdings from './components/Holdings';
+import Transactions from './components/Transactions';
+import Watchlist from './components/Watchlist';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
