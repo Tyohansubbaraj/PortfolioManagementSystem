@@ -3,6 +3,8 @@ package com.marketminds.portfoliomanagementsystem.service.impl;
 import com.marketminds.portfoliomanagementsystem.model.Asset;
 import com.marketminds.portfoliomanagementsystem.repository.AssetRepository;
 import com.marketminds.portfoliomanagementsystem.service.AssetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,7 @@ import java.util.Optional;
 @Transactional
 public class AssetServiceImpl implements AssetService {
 
+    private static final Logger log = LoggerFactory.getLogger(AssetServiceImpl.class);
     private final AssetRepository assetRepository;
 
     public AssetServiceImpl(AssetRepository assetRepository) {
@@ -30,6 +33,7 @@ public class AssetServiceImpl implements AssetService {
         if (assetRepository.findBySymbol(asset.getSymbol()).isPresent()) {
             throw new IllegalArgumentException("Asset with symbol '" + asset.getSymbol() + "' already exists");
         }
+        log.info("Creating new asset with symbol: {}", asset.getSymbol());
         return assetRepository.save(asset);
     }
 
@@ -41,6 +45,7 @@ public class AssetServiceImpl implements AssetService {
         if (!assetRepository.existsById(asset.getId())) {
             throw new IllegalArgumentException("Asset with ID " + asset.getId() + " does not exist");
         }
+        log.info("Updating asset with ID: {}", asset.getId());
         return assetRepository.save(asset);
     }
 
@@ -52,6 +57,7 @@ public class AssetServiceImpl implements AssetService {
         if (!assetRepository.existsById(id)) {
             throw new IllegalArgumentException("Asset with ID " + id + " does not exist");
         }
+        log.info("Deleting asset with ID: {}", id);
         assetRepository.deleteById(id);
     }
 
@@ -61,12 +67,14 @@ public class AssetServiceImpl implements AssetService {
         if (id == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Fetching asset with ID: {}", id);
         return assetRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Asset> getAllAssets() {
+        log.info("Fetching all assets");
         return assetRepository.findAll();
     }
 
@@ -76,6 +84,7 @@ public class AssetServiceImpl implements AssetService {
         if (symbol == null || symbol.isEmpty()) {
             throw new IllegalArgumentException("Symbol cannot be null or empty");
         }
+        log.info("Fetching asset with symbol: {}", symbol);
         return assetRepository.findBySymbol(symbol);
     }
 
@@ -85,6 +94,7 @@ public class AssetServiceImpl implements AssetService {
         if (type == null || type.isEmpty()) {
             throw new IllegalArgumentException("Type cannot be null or empty");
         }
+        log.info("Fetching assets with type: {}", type);
         return assetRepository.findByType(type);
     }
 
@@ -94,6 +104,7 @@ public class AssetServiceImpl implements AssetService {
         if (sector == null || sector.isEmpty()) {
             throw new IllegalArgumentException("Sector cannot be null or empty");
         }
+        log.info("Fetching assets with sector: {}", sector);
         return assetRepository.findBySector(sector);
     }
 
@@ -103,6 +114,7 @@ public class AssetServiceImpl implements AssetService {
         if (type == null || type.isEmpty() || sector == null || sector.isEmpty()) {
             throw new IllegalArgumentException("Type and sector cannot be null or empty");
         }
+        log.info("Fetching assets with type: {} and sector: {}", type, sector);
         return assetRepository.findByTypeAndSector(type, sector);
     }
 
@@ -112,6 +124,7 @@ public class AssetServiceImpl implements AssetService {
         if (symbol == null || symbol.isEmpty()) {
             throw new IllegalArgumentException("Symbol cannot be null or empty");
         }
+        log.info("Checking existence of asset with symbol: {}", symbol);
         return assetRepository.findBySymbol(symbol).isPresent();
     }
 }

@@ -5,6 +5,8 @@ import com.marketminds.portfoliomanagementsystem.model.Watchlist;
 import com.marketminds.portfoliomanagementsystem.repository.AssetRepository;
 import com.marketminds.portfoliomanagementsystem.repository.WatchlistRepository;
 import com.marketminds.portfoliomanagementsystem.service.WatchlistService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Transactional
 public class WatchlistServiceImpl implements WatchlistService {
 
+    private static final Logger log = LoggerFactory.getLogger(WatchlistServiceImpl.class);
     private final WatchlistRepository watchlistRepository;
     private final AssetRepository assetRepository;
 
@@ -34,6 +37,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (watchlistRepository.findByAssetId(watchlist.getAsset().getId()).isPresent()) {
             throw new IllegalArgumentException("Asset is already in the watchlist");
         }
+        log.info("Creating new watchlist entry for asset ID: {}", watchlist.getAsset().getId());
         return watchlistRepository.save(watchlist);
     }
 
@@ -45,6 +49,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (!watchlistRepository.existsById(watchlist.getId())) {
             throw new IllegalArgumentException("Watchlist entry with ID " + watchlist.getId() + " does not exist");
         }
+        log.info("Updating watchlist entry with ID: {}", watchlist.getId());
         return watchlistRepository.save(watchlist);
     }
 
@@ -56,6 +61,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (!watchlistRepository.existsById(id)) {
             throw new IllegalArgumentException("Watchlist entry with ID " + id + " does not exist");
         }
+        log.info("Deleting watchlist entry with ID: {}", id);
         watchlistRepository.deleteById(id);
     }
 
@@ -65,12 +71,14 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (id == null) {
             throw new IllegalArgumentException("Watchlist entry ID cannot be null");
         }
+        log.info("Fetching watchlist entry with ID: {}", id);
         return watchlistRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Watchlist> getAllWatchlistEntries() {
+        log.info("Fetching all watchlist entries");
         return watchlistRepository.findAll();
     }
 
@@ -80,6 +88,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Fetching watchlist entry for asset ID: {}", assetId);
         return watchlistRepository.findByAssetId(assetId);
     }
 
@@ -89,6 +98,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Checking if asset ID {} is in watchlist", assetId);
         return watchlistRepository.existsByAssetId(assetId);
     }
 
@@ -101,6 +111,7 @@ public class WatchlistServiceImpl implements WatchlistService {
         if (!watchlistOptional.isPresent()) {
             throw new IllegalArgumentException("Asset with ID " + assetId + " is not in the watchlist");
         }
+        log.info("Removing asset ID {} from watchlist", assetId);
         watchlistRepository.deleteById(watchlistOptional.get().getId());
     }
 
@@ -123,12 +134,14 @@ public class WatchlistServiceImpl implements WatchlistService {
         watchlist.setAsset(assetOptional.get());
         watchlist.setNotes(notes);
 
+        log.info("Adding asset ID {} to watchlist", assetId);
         return watchlistRepository.save(watchlist);
     }
 
     @Override
     @Transactional(readOnly = true)
     public long getWatchlistCount() {
+        log.info("Fetching watchlist count");
         return watchlistRepository.findAll().size();
     }
 }
