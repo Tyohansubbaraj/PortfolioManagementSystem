@@ -3,6 +3,8 @@ package com.marketminds.portfoliomanagementsystem.service.impl;
 import com.marketminds.portfoliomanagementsystem.model.Transaction;
 import com.marketminds.portfoliomanagementsystem.repository.TransactionRepository;
 import com.marketminds.portfoliomanagementsystem.service.TransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 @Transactional
 public class TransactionServiceImpl implements TransactionService {
 
+    private static final Logger log = LoggerFactory.getLogger(TransactionServiceImpl.class);
     private final TransactionRepository transactionRepository;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository) {
@@ -40,6 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (transaction.getPrice() == null || transaction.getPrice().signum() <= 0) {
             throw new IllegalArgumentException("Price must be greater than zero");
         }
+        log.info("Creating new transaction for asset ID: {}", transaction.getAsset().getId());
         return transactionRepository.save(transaction);
     }
 
@@ -51,6 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (!transactionRepository.existsById(transaction.getId())) {
             throw new IllegalArgumentException("Transaction with ID " + transaction.getId() + " does not exist");
         }
+        log.info("Updating transaction with ID: {}", transaction.getId());
         return transactionRepository.save(transaction);
     }
 
@@ -62,6 +67,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (!transactionRepository.existsById(id)) {
             throw new IllegalArgumentException("Transaction with ID " + id + " does not exist");
         }
+        log.info("Deleting transaction with ID: {}",id);
         transactionRepository.deleteById(id);
     }
 
@@ -71,12 +77,14 @@ public class TransactionServiceImpl implements TransactionService {
         if (id == null) {
             throw new IllegalArgumentException("Transaction ID cannot be null");
         }
+        log.info("Fetching transaction with ID: {}", id);
         return transactionRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Transaction> getAllTransactions() {
+        log.info("Fetching all transactions");
         return transactionRepository.findAll();
     }
 
@@ -86,6 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Fetching all transactions for asset ID: {}",assetId);
         return transactionRepository.findByAssetId(assetId);
     }
 
@@ -95,6 +104,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Fetching all transactions for asset ID: {} ordered by trade date descending", assetId);
         return transactionRepository.findByAssetIdOrderByTradeDateDesc(assetId);
     }
 
@@ -104,6 +114,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (type == null || type.isEmpty()) {
             throw new IllegalArgumentException("Type cannot be null or empty");
         }
+        log.info("Fetching all transactions of type: {}", type);
         return transactionRepository.findByType(type);
     }
 
@@ -116,6 +127,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
+        log.info("Fetching all transactions between {} and {}", startDate, endDate);
         return transactionRepository.findTransactionsByDateRange(startDate, endDate);
     }
 
@@ -131,6 +143,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (startDate.isAfter(endDate)) {
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
+        log.info("Fetching all transactions for asset ID: {} between {} and {}", assetId, startDate, endDate);
         return transactionRepository.findByAssetIdAndTradeDateBetween(assetId, startDate, endDate);
     }
 
@@ -140,6 +153,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Counting transactions for asset ID: {}", assetId);
         return transactionRepository.findByAssetId(assetId).size();
     }
 
@@ -149,6 +163,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Checking existence of transactions for asset ID: {}", assetId);
         return !transactionRepository.findByAssetId(assetId).isEmpty();
     }
 }

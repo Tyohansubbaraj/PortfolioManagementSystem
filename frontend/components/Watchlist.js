@@ -40,9 +40,9 @@ const Watchlist = () => {
   };
 
   const handleRemoveFromWatchlist = async (assetId) => {
-    if (!window.confirm('Are you sure you want to remove this asset from watchlist?')) {
-      return;
-    }
+//    if (!window.confirm('Are you sure you want to remove this asset from watchlist?')) {
+//      return;
+//    }
 
     try {
       await apiService.removeFromWatchlist(assetId);
@@ -151,7 +151,6 @@ const Watchlist = () => {
                   <th>Sector</th>
                   <th>Current Price</th>
                   <th>Last Updated</th>
-                  <th>Notes</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -170,7 +169,6 @@ const Watchlist = () => {
                       <td>{asset.sector}</td>
                       <td>${parseFloat(asset.currentPrice).toFixed(2)}</td>
                       <td>{lastUpdated}</td>
-                      <td>{entry.notes || '-'}</td>
                       <td>
                         <div className="actions">
                           <button

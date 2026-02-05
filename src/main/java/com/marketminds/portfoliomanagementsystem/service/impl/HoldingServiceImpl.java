@@ -4,6 +4,8 @@ import com.marketminds.portfoliomanagementsystem.dto.HoldingDetailsDTO;
 import com.marketminds.portfoliomanagementsystem.model.Holding;
 import com.marketminds.portfoliomanagementsystem.repository.HoldingRepository;
 import com.marketminds.portfoliomanagementsystem.service.HoldingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Transactional
 public class HoldingServiceImpl implements HoldingService {
 
+    private static final Logger log = LoggerFactory.getLogger(HoldingServiceImpl.class);
     private final HoldingRepository holdingRepository;
 
     public HoldingServiceImpl(HoldingRepository holdingRepository) {
@@ -39,6 +42,7 @@ public class HoldingServiceImpl implements HoldingService {
         if (holdingRepository.findByAssetId(holding.getAsset().getId()).isPresent()) {
             throw new IllegalArgumentException("Holding already exists for asset ID " + holding.getAsset().getId());
         }
+        log.info("Creating new holding for asset ID: {}", holding.getAsset().getId());
         return holdingRepository.save(holding);
     }
 
@@ -50,6 +54,7 @@ public class HoldingServiceImpl implements HoldingService {
         if (!holdingRepository.existsById(holding.getId())) {
             throw new IllegalArgumentException("Holding with ID " + holding.getId() + " does not exist");
         }
+        log.info("Updating holding with ID: {}", holding.getId());
         return holdingRepository.save(holding);
     }
 
@@ -61,6 +66,7 @@ public class HoldingServiceImpl implements HoldingService {
         if (!holdingRepository.existsById(id)) {
             throw new IllegalArgumentException("Holding with ID " + id + " does not exist");
         }
+        log.info("Deleting holding with ID: {}", id);
         holdingRepository.deleteById(id);
     }
 
@@ -107,12 +113,14 @@ public class HoldingServiceImpl implements HoldingService {
         dto.setProfitLoss(profitLoss);
         dto.setProfitLossPercent(profitLossPercent);
 
+        log.info("Fetched holding details for holding ID: {}", id);
         return dto;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Holding> getAllHoldings() {
+        log.info("Fetching all holdings");
         return holdingRepository.findAll();
     }
 
@@ -122,6 +130,7 @@ public class HoldingServiceImpl implements HoldingService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Fetching holding for asset ID: {}", assetId);
         return holdingRepository.findByAssetId(assetId);
     }
 
@@ -131,6 +140,7 @@ public class HoldingServiceImpl implements HoldingService {
         if (assetId == null) {
             throw new IllegalArgumentException("Asset ID cannot be null");
         }
+        log.info("Checking existence of holding for asset ID: {}", assetId);
         return holdingRepository.findByAssetId(assetId).isPresent();
     }
 
